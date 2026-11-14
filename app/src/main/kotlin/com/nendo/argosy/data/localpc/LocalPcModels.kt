@@ -28,6 +28,20 @@ data class LocalPcImportResult(
     val rejected: List<String>
 )
 
+enum class LocalPcImportDisposition { ADD, ADD_TARGET, UNCHANGED, REJECTED }
+
+data class LocalPcImportPreviewItem(
+    val draft: LocalPcEntryDraft?,
+    val sourceName: String,
+    val disposition: LocalPcImportDisposition,
+    val existingGameId: Long? = null
+)
+
+data class LocalPcImportPreview(
+    val items: List<LocalPcImportPreviewItem>,
+    val unreadableSources: List<String>
+)
+
 data class LocalPcBackup(
     val version: Int,
     val entries: List<LocalPcBackupEntry>

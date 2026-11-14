@@ -20,6 +20,9 @@ Core persistence and launcher baseline implemented; management UI and end-to-end
 - Added stable entry and target identities, typed runner targets, default/one-shot resolution, versioned JSON backup codec, and idempotent GameNative marker import primitives.
 - Added explicit GameNative, patched full GameHub, Lite, and stock-full capability profiles; stock full is blocked with an unverified-contract diagnostic rather than guessed.
 - Integrated local-PC launch dispatch without changing RomM, Steam, emulator resolver, save-sync paths, or private runner databases.
+- Committed and pushed the persistence/typed-runner milestone as `3646a8eef` on `origin/feature/local-pc-runners`.
+- Added a SAF document service for single marker import, recursive folder preview, explicit unreadable/rejected reporting, confirmed import, versioned backup read, and user-selected backup write. No persisted tree dependency or private app storage is introduced.
+- Verified the SAF layer with `:app:compileDebugKotlin` using the complete JDK (PASS, 2m19s cold KSP compile).
 - Focused tests were attempted; the first invocation failed before project compilation because the host `JAVA_HOME` selected `/usr/lib/jvm/java-21-openjdk-amd64`, whose installation lacks `bin/jlink`. Resume with the complete toolchain path shown below.
 - Verified GitHub credential `JustAQuickName`. Upstream's release skill reserves official releases/version bumps/release builds for `tmgast`; this project will produce only the required side-by-side debug artifact unless maintainer authority is later provided.
 
@@ -38,7 +41,7 @@ Core persistence and launcher baseline implemented; management UI and end-to-end
 ## Remaining
 
 - Record the final evidence ledger and compatibility limits.
-- Complete import preview/conflict review, SAF document/folder scanning, backup file I/O, and artwork selection.
+- Wire import preview/conflict review, SAF launchers, backup file I/O, and artwork selection into the management UI.
 - Replace internal launcher diagnostic text with localized actionable UI messages.
 - Integrate library/settings/detail workflows with touch, controller, keyboard, and presentation behavior.
 - Add unit/migration/UI tests.

@@ -1,6 +1,7 @@
 package com.nendo.argosy.di
 
 import android.content.Context
+import android.content.ContentResolver
 import androidx.room.Room
 import com.nendo.argosy.data.local.ALauncherDatabase
 import com.nendo.argosy.data.local.migrations.MigrationRegistry
@@ -68,6 +69,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
+    @Provides
+    @Singleton
+    fun provideContentResolver(@ApplicationContext context: Context): ContentResolver = context.contentResolver
 
     @Provides
     @Singleton
