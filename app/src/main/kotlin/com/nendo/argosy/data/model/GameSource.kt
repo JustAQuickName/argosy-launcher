@@ -6,5 +6,6 @@ enum class GameSource {
     ROMM_SYNCED,
     STEAM,
     ANDROID_APP,
-    GAMENATIVE
+    GAMENATIVE,
+    LOCAL_PC
 }

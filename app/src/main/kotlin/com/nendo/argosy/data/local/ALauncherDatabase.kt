@@ -191,9 +191,11 @@ import com.nendo.argosy.data.local.entity.SteamLicenseEntity
         com.nendo.argosy.data.local.entity.SnapshotChannelEntity::class,
         com.nendo.argosy.data.local.entity.GameScreenshotEntity::class,
         com.nendo.argosy.data.local.entity.RAPatchCacheEntity::class,
-        com.nendo.argosy.data.local.entity.PlayRecordDeletionEntity::class
+        com.nendo.argosy.data.local.entity.PlayRecordDeletionEntity::class,
+        com.nendo.argosy.data.local.entity.LocalPcEntryEntity::class,
+        com.nendo.argosy.data.local.entity.LocalPcLaunchTargetEntity::class
     ],
-    version = 223,
+    version = 224,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -262,6 +264,7 @@ abstract class ALauncherDatabase : RoomDatabase() {
     abstract fun managedInstallerDao(): com.nendo.argosy.data.local.dao.ManagedInstallerDao
     abstract fun gameGroupPickDao(): com.nendo.argosy.data.local.dao.GameGroupPickDao
     abstract fun gameArtDao(): com.nendo.argosy.data.local.dao.GameArtDao
+    abstract fun localPcDao(): com.nendo.argosy.data.local.dao.LocalPcDao
     abstract fun sigilSyncStateDao(): com.nendo.argosy.data.local.dao.SigilSyncStateDao
     abstract fun snapshotChannelDao(): com.nendo.argosy.data.local.dao.SnapshotChannelDao
     abstract fun gameScreenshotDao(): com.nendo.argosy.data.local.dao.GameScreenshotDao

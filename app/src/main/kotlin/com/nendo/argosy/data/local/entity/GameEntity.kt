@@ -167,7 +167,7 @@ data class GameEntity(
         get() = steamLauncher != null && steamLauncher != LAUNCHER_UNSPECIFIED
 
     val isDownloaded: Boolean
-        get() = localPath != null || isExternallyManaged
+        get() = source == GameSource.LOCAL_PC || localPath != null || isExternallyManaged
 
     val isRemovedFromRomm: Boolean
         get() = isServerRemovedRomm(source, rommId)
@@ -228,7 +228,7 @@ data class GameListItem(
         get() = steamLauncher != null && steamLauncher != GameEntity.LAUNCHER_UNSPECIFIED
 
     val isDownloaded: Boolean
-        get() = localPath != null || isExternallyManaged
+        get() = source == GameSource.LOCAL_PC || localPath != null || isExternallyManaged
 
     val isRemovedFromRomm: Boolean
         get() = isServerRemovedRomm(source, rommId)

@@ -98,7 +98,8 @@ class GameNativeStoreSync @Inject constructor(
     private val syncPreferencesRepository: com.nendo.argosy.data.preferences.SyncPreferencesRepository,
     private val steamLibraryRepair: com.nendo.argosy.data.steam.SteamLibraryRepair,
     private val gameArtDao: com.nendo.argosy.data.local.dao.GameArtDao,
-    private val gameScreenshotDao: GameScreenshotDao
+    private val gameScreenshotDao: GameScreenshotDao,
+    private val localPcRepository: com.nendo.argosy.data.localpc.LocalPcRepository
 ) {
     private val httpClient by lazy {
         OkHttpClient.Builder()
@@ -139,6 +140,24 @@ class GameNativeStoreSync @Inject constructor(
             if (markers == null) {
                 Logger.warn(TAG, "scan: sync dir unreadable | store=${folder.slug}, path=$path")
                 results[folder] = StoreScanResult.FolderMissing(path)
+                continue
+            }
+            if (folder == GameNativeSyncFolder.CUSTOM) {
+                val drafts = markers.map { (id, title) ->
+                    val target = com.nendo.argosy.data.localpc.LocalPcTargetDraft(
+                        runnerType = com.nendo.argosy.data.model.LocalPcRunnerType.GAME_NATIVE,
+                        runnerGameId = id.toString(),
+                        packageName = GameNativeLauncher.packageName,
+                        displayName = GameNativeLauncher.displayName
+                    )
+                    com.nendo.argosy.data.localpc.LocalPcEntryDraft(
+                        title = title,
+                        sourceFingerprint = com.nendo.argosy.data.localpc.LocalPcMarkerParser.fingerprint(target),
+                        target = target
+                    )
+                }
+                val imported = localPcRepository.import(drafts)
+                results[folder] = StoreScanResult.Library(markers.size, imported.added, 0)
                 continue
             }
             val store = GameNativeStore.forFolder(folder)

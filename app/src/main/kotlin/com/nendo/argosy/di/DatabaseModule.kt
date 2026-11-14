@@ -24,6 +24,7 @@ import com.nendo.argosy.data.local.dao.EmulatorSaveConfigDao
 import com.nendo.argosy.data.local.dao.EmulatorUpdateDao
 import com.nendo.argosy.data.local.dao.FirmwareDao
 import com.nendo.argosy.data.local.dao.GameArtDao
+import com.nendo.argosy.data.local.dao.LocalPcDao
 import com.nendo.argosy.data.local.dao.GameDao
 import com.nendo.argosy.data.local.dao.GameDiscDao
 import com.nendo.argosy.data.local.dao.GameFileDao
@@ -89,6 +90,9 @@ object DatabaseModule {
 
     @Provides
     fun provideGameArtDao(database: ALauncherDatabase): GameArtDao = database.gameArtDao()
+    @Provides
+    @Singleton
+    fun provideLocalPcDao(database: ALauncherDatabase): LocalPcDao = database.localPcDao()
 
     @Provides
     fun provideGameScreenshotDao(database: ALauncherDatabase): GameScreenshotDao = database.gameScreenshotDao()

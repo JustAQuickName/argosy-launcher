@@ -111,7 +111,8 @@ class SteamInstallMarkingTest {
             syncPreferencesRepository = syncPrefs,
             steamLibraryRepair = mockk(relaxed = true),
             gameArtDao = mockk(relaxed = true),
-            gameScreenshotDao = mockk(relaxed = true)
+            gameScreenshotDao = mockk(relaxed = true),
+            localPcRepository = mockk(relaxed = true)
         ).scan()
     }
 

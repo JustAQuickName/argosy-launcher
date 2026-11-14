@@ -23,5 +23,5 @@ val GameSource.storageSourceLabelRes: Int?
     get() = when (this) {
         GameSource.ROMM_REMOTE, GameSource.ROMM_SYNCED -> R.string.settings_storage_game_source_romm
         GameSource.LOCAL_ONLY -> R.string.settings_storage_game_source_local_only
-        GameSource.STEAM, GameSource.ANDROID_APP, GameSource.GAMENATIVE -> null
+        GameSource.STEAM, GameSource.ANDROID_APP, GameSource.GAMENATIVE, GameSource.LOCAL_PC -> null
     }

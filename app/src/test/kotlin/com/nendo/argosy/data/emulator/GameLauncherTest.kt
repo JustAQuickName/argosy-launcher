@@ -180,7 +180,9 @@ class GameLauncherTest {
             ),
             keepAlivePolicy = mockk {
                 coEvery { launchFlags(any(), any()) } answers { secondArg() }
-            }
+            },
+            localPcRepository = mockk(relaxed = true),
+            localPcRunnerLauncher = mockk(relaxed = true)
         )
     }
 

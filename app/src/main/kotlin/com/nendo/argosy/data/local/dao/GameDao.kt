@@ -20,7 +20,7 @@ import java.time.Instant
 const val SHOWCASE_COVER_LIMIT = 250
 
 internal const val INSTALLED_SQL =
-    "(localPath IS NOT NULL OR (steamLauncher IS NOT NULL AND steamLauncher != '${GameEntity.LAUNCHER_UNSPECIFIED}'))"
+    "(source = 'LOCAL_PC' OR localPath IS NOT NULL OR (steamLauncher IS NOT NULL AND steamLauncher != '${GameEntity.LAUNCHER_UNSPECIFIED}'))"
 
 internal const val ENABLED_PLATFORM_SQL =
     "EXISTS (SELECT 1 FROM platforms WHERE platforms.id = games.platformId AND $PLATFORM_ENABLED_SQL)"
@@ -226,7 +226,7 @@ interface GameDao {
         FROM games
         WHERE isGroupVisible = 1
         AND NOT EXISTS (SELECT 1 FROM user_roms_hidden h WHERE h.gameId = games.id AND (h.ownerUserId IS NULL OR h.ownerUserId IS :ownerUserId))
-        AND (source = 'LOCAL_ONLY' OR source = 'ROMM_SYNCED' OR source = 'STEAM' OR source = 'ANDROID_APP')
+        AND (source = 'LOCAL_ONLY' OR source = 'ROMM_SYNCED' OR source = 'STEAM' OR source = 'ANDROID_APP' OR source = 'LOCAL_PC')
         AND (source != 'STEAM' OR localPath IS NOT NULL OR (steamLauncher IS NOT NULL AND steamLauncher != 'native'))
         AND $ENABLED_PLATFORM_SQL
         ORDER BY sortTitle ASC
@@ -387,7 +387,7 @@ interface GameDao {
         WHERE platformId = :platformId
         AND isGroupVisible = 1
         AND NOT EXISTS (SELECT 1 FROM user_roms_hidden h WHERE h.gameId = games.id AND (h.ownerUserId IS NULL OR h.ownerUserId IS :ownerUserId))
-        AND (source = 'LOCAL_ONLY' OR source = 'ROMM_SYNCED' OR source = 'STEAM' OR source = 'ANDROID_APP')
+        AND (source = 'LOCAL_ONLY' OR source = 'ROMM_SYNCED' OR source = 'STEAM' OR source = 'ANDROID_APP' OR source = 'LOCAL_PC')
         AND (source != 'STEAM' OR localPath IS NOT NULL OR (steamLauncher IS NOT NULL AND steamLauncher != 'native'))
         ORDER BY sortTitle ASC
     """)
@@ -1267,7 +1267,7 @@ interface GameDao {
         AND (:source != 'FAVORITES' OR isFavorite = 1)
         AND (
             :source != 'PLAYABLE' OR (
-                source IN ('LOCAL_ONLY', 'ROMM_SYNCED', 'STEAM', 'ANDROID_APP')
+                source IN ('LOCAL_ONLY', 'ROMM_SYNCED', 'STEAM', 'ANDROID_APP', 'LOCAL_PC')
                 AND (source != 'STEAM' OR localPath IS NOT NULL OR (steamLauncher IS NOT NULL AND steamLauncher != 'native'))
             )
         )

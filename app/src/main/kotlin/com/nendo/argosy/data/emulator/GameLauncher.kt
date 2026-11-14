@@ -150,7 +150,9 @@ class GameLauncher @Inject constructor(
     private val steamInstallReports: SteamInstallReports,
     private val appsRepository: com.nendo.argosy.data.repository.AppsRepository,
     private val emulatorResolver: EmulatorResolver,
-    private val keepAlivePolicy: com.nendo.argosy.data.emulator.background.KeepAlivePolicy
+    private val keepAlivePolicy: com.nendo.argosy.data.emulator.background.KeepAlivePolicy,
+    private val localPcRepository: com.nendo.argosy.data.localpc.LocalPcRepository,
+    private val localPcRunnerLauncher: com.nendo.argosy.data.localpc.LocalPcRunnerLauncher
 ) {
     private val shellAmAvailable: Boolean by lazy {
         try {
@@ -183,7 +185,8 @@ class GameLauncher @Inject constructor(
         variantFileId: Long? = null,
         skipVariantPrompt: Boolean = false,
         allowVariantPrompt: Boolean = true,
-        prefetchedGame: GameEntity? = null
+        prefetchedGame: GameEntity? = null,
+        localPcTargetId: String? = null
     ): LaunchResult = withContext(Dispatchers.IO) {
         launchInternal(
             gameId = gameId,
@@ -193,7 +196,8 @@ class GameLauncher @Inject constructor(
             variantFileId = variantFileId,
             skipVariantPrompt = skipVariantPrompt,
             allowVariantPrompt = allowVariantPrompt,
-            prefetchedGame = prefetchedGame
+            prefetchedGame = prefetchedGame,
+            localPcTargetId = localPcTargetId
         )
     }
 
@@ -205,7 +209,8 @@ class GameLauncher @Inject constructor(
         variantFileId: Long?,
         skipVariantPrompt: Boolean,
         allowVariantPrompt: Boolean,
-        prefetchedGame: GameEntity?
+        prefetchedGame: GameEntity?,
+        localPcTargetId: String?
     ): LaunchResult {
         Logger.debug(TAG, "launch() called: gameId=$gameId, discId=$discId, forResume=$forResume, variantFileId=$variantFileId, skipVariantPrompt=$skipVariantPrompt")
 
@@ -227,6 +232,10 @@ class GameLauncher @Inject constructor(
 
         if (game.source == GameSource.GAMENATIVE) {
             return launchGameNativeStoreGame(game)
+        }
+
+        if (game.source == GameSource.LOCAL_PC) {
+            return launchLocalPcGame(game, localPcTargetId)
         }
 
         if (game.source == GameSource.ANDROID_APP || game.platformSlug == "android") {
@@ -836,6 +845,28 @@ class GameLauncher @Inject constructor(
         } else {
             File(basePath)
         }
+
+    private suspend fun launchLocalPcGame(game: GameEntity, targetId: String?): LaunchResult {
+        val target = localPcRepository.resolveTarget(game.id, targetId)
+            ?: return LaunchResult.Error("Choose a launch target for " + game.title)
+        val prepared = localPcRunnerLauncher.prepare(target)
+        if (!prepared.diagnostic.canLaunch) {
+            val detail = prepared.diagnostic.detail?.let { ": " + it }.orEmpty()
+            return LaunchResult.Error(prepared.diagnostic.code.name + detail)
+        }
+        val intent = prepared.intent ?: return LaunchResult.Error("COMPONENT_UNAVAILABLE")
+        overlayWriter.recordPlayStart(game.id, Instant.now())
+        return LaunchResult.Success(
+            intent = intent,
+            session = ExternalSessionStart(
+                gameId = game.id,
+                emulatorPackage = target.packageName,
+                coreName = null,
+                variantFileId = null,
+                origin = LaunchOrigin.INTERNAL
+            )
+        )
+    }
 
     private suspend fun launchGameNativeStoreGame(game: GameEntity): LaunchResult {
         val appId = game.steamAppId?.toInt()

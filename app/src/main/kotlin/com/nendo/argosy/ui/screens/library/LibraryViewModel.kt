@@ -265,6 +265,7 @@ data class LibraryGameUi(
             GameSource.STEAM -> Icons.Default.Cloud
             GameSource.ANDROID_APP -> null
             GameSource.GAMENATIVE -> Icons.Default.Cloud
+            GameSource.LOCAL_PC -> Icons.Default.Folder
         }
 }
 

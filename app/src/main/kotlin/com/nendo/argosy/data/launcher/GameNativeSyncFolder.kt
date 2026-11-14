@@ -17,6 +17,7 @@ enum class GameNativeSyncFolder(
     GOG("gog", "GOG", ".gog", GameNativeLauncher.packageName),
     EPIC("epic", "Epic Games", ".epic", GameNativeLauncher.packageName),
     AMAZON("amazon", "Amazon Games", ".amazon", GameNativeLauncher.packageName),
+    CUSTOM("custom", "Local PC", ".pcgame", GameNativeLauncher.packageName),
     DROIDDECK("droiddeck", "DroidDeck", ".steam", DroidDeckLauncher.packageName);
 
     companion object {

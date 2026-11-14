@@ -9,6 +9,7 @@ object LocalPlatformIds {
     const val GOG = -4L
     const val EPIC = -5L
     const val AMAZON = -6L
+    const val LOCAL_PC = -7L
 }
 
 /**
@@ -407,7 +408,8 @@ object PlatformDefinitions {
     private val localPlatformIdMap = mapOf(
         "android" to LocalPlatformIds.ANDROID,
         "steam" to LocalPlatformIds.STEAM,
-        "ios" to LocalPlatformIds.IOS
+        "ios" to LocalPlatformIds.IOS,
+        "local-pc" to LocalPlatformIds.LOCAL_PC
     )
 
     fun getLocalPlatformId(slug: String): Long? = localPlatformIdMap[slug.lowercase()]
@@ -616,7 +618,8 @@ object PlatformDefinitions {
         // =====================================================================
         PlatformDef("android", "Android", "Android", setOf("apk", "xapk"), 1),
         PlatformDef("steam", "Steam", "Steam", emptySet(), 2),
-        PlatformDef("ios", "iOS", "iOS", emptySet(), 3)
+        PlatformDef("ios", "iOS", "iOS", emptySet(), 3),
+        PlatformDef("local-pc", "Local PC", "PC", emptySet(), 4)
     )
 
     private val platformMap: Map<String, PlatformDef>

@@ -4509,3 +4509,42 @@ object Migration_202_203 : Migration(202, 203) {
         db.execSQL("PRAGMA foreign_keys=ON")
     }
 }
+
+object Migration_223_224 : Migration(223, 224) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `local_pc_entries` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gameId` INTEGER NOT NULL, " +
+                "`stableId` TEXT NOT NULL, `defaultTargetId` TEXT, `sourceFingerprint` TEXT, " +
+                "`createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, " +
+                "FOREIGN KEY(`gameId`) REFERENCES `games`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE)"
+        )
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_local_pc_entries_gameId` " +
+                "ON `local_pc_entries` (`gameId`)"
+        )
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_local_pc_entries_stableId` " +
+                "ON `local_pc_entries` (`stableId`)"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `local_pc_launch_targets` (" +
+                "`id` TEXT NOT NULL, `entryId` INTEGER NOT NULL, `runnerType` TEXT NOT NULL, " +
+                "`runnerGameId` TEXT NOT NULL, `packageName` TEXT NOT NULL, `displayName` TEXT, " +
+                "`componentName` TEXT, `action` TEXT, `executablePath` TEXT, " +
+                "`launchArguments` TEXT, `enabled` INTEGER NOT NULL, `verifiedAt` INTEGER, " +
+                "`createdAt` INTEGER NOT NULL, `updatedAt` INTEGER NOT NULL, " +
+                "PRIMARY KEY(`id`), FOREIGN KEY(`entryId`) REFERENCES `local_pc_entries`(`id`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE)"
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_local_pc_launch_targets_entryId` " +
+                "ON `local_pc_launch_targets` (`entryId`)"
+        )
+        db.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS " +
+                "`index_local_pc_launch_targets_entryId_runnerType_runnerGameId_packageName` " +
+                "ON `local_pc_launch_targets` (`entryId`, `runnerType`, `runnerGameId`, `packageName`)"
+        )
+    }
+}
